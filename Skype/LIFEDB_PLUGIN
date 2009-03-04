@@ -2,5 +2,17 @@
    "name" : "Skype",
    "mode" : "periodic",
    "period" : 3600,
-   "cmd" : "make run"
+   "cmd" : "make run",
+   "declares" : [
+       {
+         "pltype" : "com.skype.call",
+         "description" : "Skype Call",
+         "implements" : [ "public.message" ]
+       },
+       {
+         "pltype" : "com.skype.im",
+         "description" : "Skype Message",
+         "implements" : [ "public.message" ]
+       }
+   ]
 }

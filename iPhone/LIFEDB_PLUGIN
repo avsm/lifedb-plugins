@@ -2,5 +2,18 @@
    "name" : "iPhone",
    "mode" : "periodic",
    "period" : 7200,
-   "cmd" : "sync.sh"
+   "cmd" : "sync.sh",
+   "declares" : [
+       {
+         "pltype" : "com.apple.iphone.sms",
+         "description" : "iPhone Messages",
+         "implements" : [ "public.message" ]
+       },
+       {
+         "pltype" : "com.apple.iphone.call",
+         "description" : "iPhone Call",
+         "implements" : [ "public.message" ]
+       }
+   ]
+
 }

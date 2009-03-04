@@ -2,5 +2,17 @@
    "name" : "Twitter",
    "mode" : "periodic",
    "period" : 300,
-   "cmd" : "make run"
+   "cmd" : "make run",
+   "declares" : [
+       {
+         "pltype" : "com.twitter.message",
+         "description" : "Twitter Message",
+         "implements" : [ "public.message" ]
+       },
+       {
+         "pltype" : "com.twitter.broadcast",
+         "description" : "Twitter",
+         "implements" : [ "public.broadcast" ]
+       }
+   ]
 }

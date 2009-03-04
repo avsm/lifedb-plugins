@@ -2,5 +2,12 @@
    "name" : "Contacts",
    "mode" : "periodic",
    "period" : 3600,
-   "cmd" : "make run"
+   "cmd" : "make run",
+   "declares" : [
+       {
+         "pltype" : "com.clinklabs.contact",
+         "description" : "Contact",
+         "implements" : [ "public.contact" ]
+       }
+   ]
 }
