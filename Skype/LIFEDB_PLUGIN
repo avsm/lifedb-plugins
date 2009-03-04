@@ -1,0 +1,6 @@
+{
+   "name" : "Skype",
+   "mode" : "periodic",
+   "period" : 3600,
+   "cmd" : "make run"
+}
