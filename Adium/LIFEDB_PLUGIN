@@ -1,0 +1,6 @@
+{
+   "name" : "Adium",
+   "mode" : "periodic",
+   "period" : 10,
+   "cmd" : "make run"
+}
