@@ -5,14 +5,9 @@
    "cmd" : "make run",
    "declares" : [
        {
-         "pltype" : "com.skype.call",
+         "pltype" : "com.skype",
          "description" : "Skype Call",
-         "implements" : [ "public.message" ]
-       },
-       {
-         "pltype" : "com.skype.im",
-         "description" : "Skype Message",
-         "implements" : [ "public.message" ]
+         "implements" : "public.message"
        }
    ]
 }

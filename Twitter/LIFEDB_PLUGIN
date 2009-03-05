@@ -5,14 +5,9 @@
    "cmd" : "make run",
    "declares" : [
        {
-         "pltype" : "com.twitter.message",
-         "description" : "Twitter Message",
-         "implements" : [ "public.message" ]
-       },
-       {
-         "pltype" : "com.twitter.broadcast",
+         "pltype" : "com.twitter",
          "description" : "Twitter",
-         "implements" : [ "public.broadcast" ]
+         "implements" : "public.message"
        }
    ]
 }

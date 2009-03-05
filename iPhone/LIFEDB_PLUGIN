@@ -6,14 +6,13 @@
    "declares" : [
        {
          "pltype" : "com.apple.iphone.sms",
-         "description" : "iPhone Messages",
-         "implements" : [ "public.message" ]
+         "description" : "iPhone Message",
+         "implements" : "public.message"
        },
        {
          "pltype" : "com.apple.iphone.call",
          "description" : "iPhone Call",
-         "implements" : [ "public.message" ]
+         "implements" : "public.message"
        }
    ]
-
 }

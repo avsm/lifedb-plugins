@@ -7,7 +7,7 @@
        {
          "pltype" : "com.clinklabs.contact",
          "description" : "Contact",
-         "implements" : [ "public.contact" ]
+         "implements" : "public.contact" 
        }
    ]
 }
