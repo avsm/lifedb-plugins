@@ -59,9 +59,9 @@ def retryOnError(label, c):
           time.sleep(60 * 20)  # sleep for 20 minutes
          
 def main():
-    user = sys.argv[1]
-    password = sys.argv[2]
-    save_dir = sys.argv[3]
+    user = os.getenv('LIFEDB_USERNAME')
+    password = os.getenv('LIFEDB_PASSWORD')
+    save_dir = os.getenv('LIFEDB_DIR') + "/Twitter"
     t = twitter.Twitter(user, password)
     tsearch = twitter.Twitter(user, password, domain="search.twitter.com")
     friends = [user]
@@ -73,7 +73,10 @@ def main():
         if save_stats(save_dir, fs['results'], mode="to"):
             break;
         pg = pg + 1
+  
     get_all_friends_tweets = False
+    if os.getenv('FULL_SYNC') == "1":
+        get_all_friends_tweets = True
     if get_all_friends_tweets:
         pg = 1
         while True:
