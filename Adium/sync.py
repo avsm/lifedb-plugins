@@ -10,6 +10,7 @@ import time
 import hashlib
 import base64
 import xml
+import lxml.html
 
 cache_dir = "%s/Library/Caches/LifeDB/Adium" % os.getenv("HOME")
 save_dir = "%s/Documents/LifeDB/Adium" % os.getenv("HOME")
@@ -47,6 +48,7 @@ def parseLog(chatlog):
             time_float = time.mktime(tt)
             # very dodgily ignoring unicode errors here, but copes with some malformed messages
             body = unicode.join(u'',map(lambda x: unicode(x.toxml(encoding='utf-8'), errors='ignore'), msg.childNodes))
+            body = lxml.html.fromstring(body).text_content()
             m = { 'sender' : sender, 'time': time_float, 'text' : body }
             m['_type'] = 'com.adium'
             m['_timestamp'] = time_float
