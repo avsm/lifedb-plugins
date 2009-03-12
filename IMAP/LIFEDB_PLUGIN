@@ -1,0 +1,11 @@
+{
+   "name" : "IMAP",
+   "cmd" : "./run.sh ",
+   "declares" : [
+       {
+         "pltype" : "com.clinklabs.email",
+         "description" : "Email",
+         "implements" : "public.message"
+       }
+   ]
+}
