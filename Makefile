@@ -26,6 +26,7 @@ $(OBJDIR_STAMP):
 .PHONY: clean
 clean:
 	rm -rf $(OBJDIR)
+	cd IMAP && $(MAKE) clean
 
 .PHONY: clean-data
 clean-data:
@@ -132,4 +133,4 @@ pydateutil: $(PYDATEUTIL_STAMP)
 
 .PHONY: dist
 dist: lxml pyjson pytwitter pydateutil pyfuse pyskype $(SETENV_SCRIPT)
-	@ :
+	cd IMAP && $(MAKE) 
