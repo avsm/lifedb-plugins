@@ -1,7 +1,5 @@
 {
    "name" : "Twitter",
-   "mode" : "periodic",
-   "period" : 300,
    "cmd" : "make run",
    "declares" : [
        {

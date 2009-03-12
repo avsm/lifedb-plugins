@@ -1,7 +1,5 @@
 {
    "name" : "iPhone",
-   "mode" : "periodic",
-   "period" : 7200,
    "cmd" : "sync.sh",
    "declares" : [
        {
