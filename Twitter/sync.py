@@ -62,6 +62,9 @@ def main():
     user = os.getenv('LIFEDB_USERNAME')
     password = os.getenv('LIFEDB_PASSWORD')
     save_dir = os.getenv('LIFEDB_DIR') + "/Twitter"
+    if not user or not password or not save_dir:
+        print "need to define LIFEDB_USERNAME LIFEDB_PASSWORD and LIFEDB_DIR"
+        exit(1)
     t = twitter.Twitter(user, password)
     tsearch = twitter.Twitter(user, password, domain="search.twitter.com")
     friends = [user]
