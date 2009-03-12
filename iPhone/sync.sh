@@ -11,7 +11,6 @@ fi
 
 set -eu
 
-SUFFIX=/Phone
 PYTHON=/usr/bin/python
 BASE="/Users/$USER/Library/Application Support/MobileSync/Backup/"
 IPHONE_LIST=`ls -1 "${BASE}"`
@@ -25,6 +24,6 @@ for i in "${IPHONE_LIST}"; do
     fi
     tmpout="${TMPDIR}/${i}"
     ${PYTHON} ./manifest.py -x Library -o ${tmpout} "${fdir}"
-    ${PYTHON} ./parse_db.py -m sms -o ${LIFEDB_DIR}${SUFFIX} -u ${i} ${tmpout}/Library/SMS/sms.db
-    ${PYTHON} ./parse_db.py -m call -o ${LIFEDB_DIR}${SUFFIX} -u ${i} ${tmpout}/Library/CallHistory/call_history.db
+    ${PYTHON} ./parse_db.py -m sms -o ${LIFEDB_DIR} -u ${i} ${tmpout}/Library/SMS/sms.db
+    ${PYTHON} ./parse_db.py -m call -o ${LIFEDB_DIR} -u ${i} ${tmpout}/Library/CallHistory/call_history.db
 done

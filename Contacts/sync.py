@@ -118,7 +118,10 @@ def writeRecord(p, uid, mtime, fobj):
 def main(argv = None):
     """ main entry point """
 
-    save_dir = sys.argv[1]
+    save_dir = os.getenv("LIFEDB_DIR")
+    if not save_dir:
+       print >> sys.stderr, "no LIFEDB_DIR in env"
+       exit(1)
     book = AddressBook.ABAddressBook.sharedAddressBook()
     for p in book.people():
         mtime_ts = getField(p, AddressBook.kABModificationDateProperty)

@@ -12,8 +12,8 @@ import base64
 import xml
 import lxml.html
 
-cache_dir = "%s/Library/Caches/LifeDB/Adium" % os.getenv("HOME")
-save_dir = "%s/Documents/LifeDB/Adium" % os.getenv("HOME")
+cache_dir = None
+save_dir = None
 
 def parseLog(chatlog):
     mtime = os.stat(chatlog).st_mtime
@@ -113,12 +113,10 @@ def main():
     if not save_dir:
         print >> sys.stderr, "no LIFEDB_DIR in env"
         exit(1)
-    save_dir = save_dir + "/Twitter"
     cache_dir = os.getenv("LIFEDB_CACHE_DIR")
     if not cache_dir: 
         print >> sys.stderr, "no LIFEDB_CACHE_DIR in env"
         exit(1)
-    cache_dir = cache_dir + "/Twitter"
     logdir = "%s/Library/Application Support/Adium 2.0/Users/Default/Logs/" % os.getenv("HOME")
     if not os.path.isdir(logdir):
         print >> sys.stderr, "Unable to find Adium log dir in: %s" % logdir

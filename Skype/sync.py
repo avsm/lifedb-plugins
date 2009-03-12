@@ -3,7 +3,11 @@ import simplejson
 import datetime, time, sys, os
 
 def main():
-    save_dir = sys.argv[1]
+    save_dir = os.getenv("LIFEDB_DIR")
+    if not save_dir:
+        print >> sys.stderr, "no LIFEDB_DIR in env"
+        exit(1)
+
     skype = Skype4Py.Skype()
     skype.Attach()
 
