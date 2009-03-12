@@ -94,6 +94,16 @@ pyfuse: $(PYFUSE_STAMP)
 	@ :
 
 ###############################
+# LXML Python
+
+LXML_DIST=lxml-2.1.5
+LXML_STAMP=$(OBJDIR)/.tgz-$(LXML_DIST)
+
+.PHONY: lxml
+lxml: $(LXML_STAMP)
+	@ :
+
+###############################
 # Skype Python
 
 SKYPE_DIST=Skype4Py-1.0.31.0
@@ -121,5 +131,5 @@ pydateutil: $(PYDATEUTIL_STAMP)
 	@ :
 
 .PHONY: dist
-dist: pyjson pytwitter pydateutil pyfuse pyskype $(SETENV_SCRIPT)
+dist: lxml pyjson pytwitter pydateutil pyfuse pyskype $(SETENV_SCRIPT)
 	@ :
