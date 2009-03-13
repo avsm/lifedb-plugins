@@ -109,6 +109,7 @@ def needs_parsing(log_filename):
             return False
     
 def main():
+    global save_dir, cache_dir
     save_dir = os.getenv("LIFEDB_DIR")
     if not save_dir:
         print >> sys.stderr, "no LIFEDB_DIR in env"
