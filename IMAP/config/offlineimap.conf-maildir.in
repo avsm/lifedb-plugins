@@ -352,6 +352,8 @@ holdconnectionopen = yes
 # Example 2: synchronizing everything except Trash.
 #
 # folderfilter = lambda foldername: foldername not in ['Trash']
+
+folderfilter = lambda x: x not in ['Trash','Spam','Deleted Messages','Drafts']
 #
 # Example 3: Using a regular expression to exclude Trash and all folders
 # containing the characters "Del".
