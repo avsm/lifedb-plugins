@@ -31,8 +31,7 @@ if [ "${IMAP_SERVER}" = "" ]; then
      exit 1
 fi
 
-# need newer python than base due to MemoryError issue
-PYTHON=/opt/local/bin/python2.5
+PYTHON=/usr/bin/python
 
 if [ ! -x "${PYTHON}" ]; then
     echo ${PYTHON}: not found

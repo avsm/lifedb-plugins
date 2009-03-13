@@ -16,13 +16,14 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
-import re, string, types, binascii, socket, time, random, subprocess, sys, os
+import re, string, types, binascii, time, random, subprocess, sys, os
 from offlineimap.ui import UIBase
 from imaplib import *
+import mysocket as socket
 
 # Import the symbols we need that aren't exported by default
 from imaplib import IMAP4_PORT, IMAP4_SSL_PORT, InternalDate, Mon2num
-
+import gc
 
 class IMAP4_Tunnel(IMAP4):
     """IMAP4 client class over a tunnel
@@ -67,7 +68,7 @@ class sslwrapper:
         return self.sslsock.write(s)
 
     def _read(self, n):
-        return self.sslsock.read(n)
+        return self.sslsock.read(min(n,16384))
 
     def read(self, n):
         if len(self.readbuf):
