@@ -5,12 +5,14 @@
        {
          "pltype" : "com.apple.iphone.sms",
          "description" : "iPhone Message",
-         "implements" : "public.message"
+         "implements" : "public.message",
+         "icon" : "sms_30x30.png"
        },
        {
          "pltype" : "com.apple.iphone.call",
          "description" : "iPhone Call",
-         "implements" : "public.message"
+         "implements" : "public.message",
+         "icon" : "phone_30x30.png"
        }
    ]
 }

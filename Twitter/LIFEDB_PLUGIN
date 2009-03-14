@@ -5,7 +5,8 @@
        {
          "pltype" : "com.twitter",
          "description" : "Twitter",
-         "implements" : "public.message"
+         "implements" : "public.message",
+         "icon" : "twitter_logo_64x15.png"
        }
    ]
 }

@@ -5,7 +5,8 @@
        {
          "pltype" : "com.clinklabs.email",
          "description" : "Email",
-         "implements" : "public.message"
+         "implements" : "public.message",
+         "icon" : "mail_30x30.png"
        }
    ]
 }

@@ -6,7 +6,7 @@
          "pltype" : "com.adium",
          "description" : "Instant Messaging",
          "implements" : "public.message",
-         "icon" : "icon.png"
+         "icon" : "chat_30x30.png"
        }
    ]
 }
