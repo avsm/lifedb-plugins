@@ -74,17 +74,34 @@ def convert_mail_to_dict(content, folder, uid, flags, rtime, atts):
     msg['_bulk'] = -1
     return msg
 
+def attachments_dir(uid):
+    uid, ext = os.path.splitext(uid)
+    base=""
+    odd = False
+    i = iter(uid)
+    try:
+        while True:
+            base = os.path.join(base, (i.next()+i.next()))
+    except StopIteration, e:
+        pass
+    return base
+
 def parse_mail_content(msg, atts):
     if msg.is_multipart():
        return { 'multipart': True, 'parts' : map(lambda x: parse_mail_content(x,atts), msg.get_payload()), 
           'ctype': _to_unicode(msg.get_content_type()) }
     else:
-       uid = uuid.uuid4().hex
+       rawuid = uuid.uuid4().hex
+       uid=rawuid
        mime = _to_unicode(msg.get_content_type())
-       r = { 'uuid' : uid, 'mime': mime, 'multipart' : False }
-       atts[uid] = {'body': msg.get_payload(decode=True), 'mime': mime }
+       r = { 'mime': mime, 'multipart' : False }
        if msg.get_filename(None):
           r['filename'] = _to_unicode(msg.get_filename())
+          fbasename, fext = os.path.splitext(r['filename'])
+          if fext:
+               uid = uid + fext
+       r['uuid'] = uid
        if msg.get_content_charset():
           r['charset'] = _to_unicode(msg.get_content_charset())
-       return r
+       atts[uid] = {'body': msg.get_payload(decode=True), 'dir': attachments_dir(uid), 'fname' : uid }
+       return uid

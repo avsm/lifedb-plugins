@@ -100,7 +100,7 @@ class MaildirRepository(BaseRepository):
             self.debug("makefolder: calling makedirs %s" % foldername)
             os.makedirs(foldername, 0700)
         self.debug("makefolder: creating cur, new, tmp")
-        for subdir in ['cur', 'new', 'tmp']:
+        for subdir in ['cur', 'new', 'tmp', '_att']:
             os.mkdir(os.path.join(foldername, subdir), 0700)
         # Invalidate the cache
         self.folders = None
