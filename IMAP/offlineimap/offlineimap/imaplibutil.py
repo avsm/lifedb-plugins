@@ -19,7 +19,6 @@
 import re, string, types, binascii, time, random, subprocess, sys, os
 from offlineimap.ui import UIBase
 from imaplib import *
-import mysocket as socket
 
 # Import the symbols we need that aren't exported by default
 from imaplib import IMAP4_PORT, IMAP4_SSL_PORT, InternalDate, Mon2num
