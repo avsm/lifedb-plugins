@@ -193,13 +193,9 @@ class MaildirFolder(BaseFolder):
         msg = EmailJSON.convert_mail_to_dict(content, self.name, uid, flags, rtime, atts)
         # write atts first, as they will be GCed if the main msg doesnt land
         for u in atts:
-            attdir = os.path.join(self.getfullname(), '_att', atts[u]['dir'])
-            try:
-                os.makedirs(attdir, 0700)
-            except e:
-                pass
-            fout = open(os.path.join(attdir, atts[u]['fname']), 'wb')
-            fout.write(atts[u]['body'])
+            attdir = os.path.join(self.getfullname(), '_att')
+            fout = open(os.path.join(attdir, u), 'wb')
+            fout.write(atts[u])
             fout.flush()
             fout.close()
         simplejson.dump(msg, file, indent=2)

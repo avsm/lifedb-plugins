@@ -70,29 +70,16 @@ def convert_mail_to_dict(content, folder, uid, flags, rtime, atts):
     body = parse_mail_content(mail, atts)
     msg = { '_type':'com.clinklabs.email', 'uid':uid, 'flags': flags, 'subject':subject, 'date':date,
        'to':all_tos, 'from':frm, 'headers': header_dict, 'message-id':msg_id, '_timestamp':date,
-       'body': body, 'folder':folder, '_from' : frm_lifedb, '_to' : all_tos_lifedb }
+       'body': body, 'folder':folder, '_from' : frm_lifedb, '_to' : all_tos_lifedb, '_att': atts.keys() }
     msg['_bulk'] = -1
     return msg
-
-def attachments_dir(uid):
-    uid, ext = os.path.splitext(uid)
-    base=""
-    odd = False
-    i = iter(uid)
-    try:
-        while True:
-            base = os.path.join(base, (i.next()+i.next()))
-    except StopIteration, e:
-        pass
-    return base
 
 def parse_mail_content(msg, atts):
     if msg.is_multipart():
        return { 'multipart': True, 'parts' : map(lambda x: parse_mail_content(x,atts), msg.get_payload()), 
           'ctype': _to_unicode(msg.get_content_type()) }
     else:
-       rawuid = uuid.uuid4().hex
-       uid=rawuid
+       uid = uuid.uuid4().hex
        mime = _to_unicode(msg.get_content_type())
        r = { 'mime': mime, 'multipart' : False }
        if msg.get_filename(None):
@@ -100,8 +87,10 @@ def parse_mail_content(msg, atts):
           fbasename, fext = os.path.splitext(r['filename'])
           if fext:
                uid = uid + fext
+       elif mime == 'text/plain':
+          uid = uid + '.txt'
        r['uuid'] = uid
        if msg.get_content_charset():
           r['charset'] = _to_unicode(msg.get_content_charset())
-       atts[uid] = {'body': msg.get_payload(decode=True), 'dir': attachments_dir(uid), 'fname' : uid }
+       atts[uid] = msg.get_payload(decode=True)
        return uid
