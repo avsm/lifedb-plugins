@@ -76,6 +76,7 @@ def main():
         if not os.path.isdir(output_dir):
             os.makedirs(output_dir)
         if not os.path.isfile(full_path):
+            print "+ %s" % full_path
             fout = open(full_path, 'w')
             simplejson.dump(res[uid], fout, indent=2)
             fout.close()
@@ -96,18 +97,19 @@ def normalize_phone(p):
 def parseSMS(c, uid_prefix):
     mynum = my_number()
     c.execute('''
-        SELECT * from message
+        SELECT group_member.address,text,flags,replace,version,date
+        FROM message INNER JOIN group_member ON group_member.group_id = message.group_id;
     ''')
     sms={}
     for row in c:
         e = {}
         if row[1]:
-          e['number'] = normalize_phone(row[1])
-          e['text'] = row[3]
-          e['flags'] = row[4]
-          e['replace'] = row[5]
-          e['version'] = row[11]
-          e['_timestamp'] = float(row[2])
+          e['number'] = normalize_phone(row[0])
+          e['text'] = row[1]
+          e['flags'] = row[2]
+          e['replace'] = row[3]
+          e['version'] = row[4]
+          e['_timestamp'] = float(row[5])
           e['_type'] = 'com.apple.iphone.sms'
           if e['flags'] == 2:
             e['_from'] = { 'type': 'phone', 'id' : e['number'] }
