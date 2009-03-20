@@ -72,7 +72,7 @@ def encodeField(value):
 def getField(p, fieldName):
     return encodeField(p.valueForProperty_(fieldName))
 
-def writeRecord(p, uid, mtime, fobj):
+def writeRecord(p, uid, mtime, attdir, fobj):
     print "NEW: %s" % addressbook_name(p)
     m = { '_type' : 'com.clinklabs.contact', '_timestamp' : mtime, 'abrecord' : uid , '_uid' : uid }
     for (fieldname, fieldkey) in FIELD_NAMES:
@@ -112,7 +112,21 @@ def writeRecord(p, uid, mtime, fobj):
                 services[fieldname] = []
             services[fieldname].extend(urls[fieldkey])
     m['_services'] = services
-    
+
+    imgdata = p.imageData()
+    if imgdata:
+        tiffData = NSImage.alloc().initWithData_(imgdata).TIFFRepresentation()
+        bitmap = NSBitmapImageRep.alloc().initWithData_(tiffData)
+        fileType = NSPNGFileType
+        imageData = bitmap.representationUsingType_properties_(fileType, None)
+        picfname = os.path.join(attdir, (uid+".png"))
+        picf = open(picfname, 'wb')
+        picf.write(str(imageData.bytes()))
+        picf.close ()
+        print "NEW: %s" % picfname
+        m['image'] = (uid+".png")
+        m['_att'] = [(uid+".png")]
+
     simplejson.dump(m, fobj, indent=2)
 
 def main(argv = None):
@@ -129,10 +143,13 @@ def main(argv = None):
         uid = getField(p, AddressBook.kABUIDProperty)
         tt = mtime.timetuple()
         dir = os.path.join(save_dir,str(tt[0]),str(tt[1]),str(tt[2]))
+        attdir = os.path.realpath(os.path.join(dir, "../_att"))
         fname = "%s.lifeentry" % uid
         full_fname = os.path.join(dir,fname) 
         if not os.path.isdir(dir):
            os.makedirs(dir)
+        if not os.path.isdir(attdir):
+           os.makedirs(attdir)
         if os.path.isfile(full_fname):
            fobj = open(full_fname,'r')
            oldjson = simplejson.load(fobj)
@@ -141,14 +158,16 @@ def main(argv = None):
                print "UPDATING"
                fd, tmpname = tempfile.mkstemp(suffix=".lifeentry")
                fout = os.fdopen(fd, 'w')
-               writeRecord(p, uid, mtime_ts, fout)
+               writeRecord(p, uid, mtime_ts, attdir, fout)
                fout.close()
                os.rename(tmpname, full_fname)
         else:
            print full_fname
-           fout = open(full_fname, 'w')
-           writeRecord(p, uid, mtime_ts, fout)
+           fd, tmpname = tempfile.mkstemp(suffix=".lifeentry")
+           fout = os.fdopen(fd, 'w')
+           writeRecord(p, uid, mtime_ts, attdir, fout)
            fout.close()
+           os.rename(tmpname, full_fname)
     
 if __name__ == "__main__":
     main()
