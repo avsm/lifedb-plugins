@@ -15,6 +15,9 @@ PYTHON=/usr/bin/python
 BASE="/Users/$USER/Library/Application Support/MobileSync/Backup/"
 IPHONE_LIST=`ls -1 "${BASE}"`
 TMPDIR=`mktemp -d -t sms.XXXXXXXXXX`
+PYTHONPATH=../obj/py/lib/python2.5/site-packages
+export PYTHONPATH
+
 trap "rm -rf $TMPDIR; exit" INT TERM EXIT
 
 for i in "${IPHONE_LIST}"; do
@@ -24,6 +27,7 @@ for i in "${IPHONE_LIST}"; do
     fi
     tmpout="${TMPDIR}/${i}"
     ${PYTHON} ./manifest.py -x Library -o ${tmpout} "${fdir}"
-    ${PYTHON} ./parse_db.py -m sms -o ${LIFEDB_DIR} -u ${i} ${tmpout}/Library/SMS/sms.db
+    echo cd ${tmpout}
     ${PYTHON} ./parse_db.py -m call -o ${LIFEDB_DIR} -u ${i} ${tmpout}/Library/CallHistory/call_history.db
+    ${PYTHON} ./parse_db.py -m sms -o ${LIFEDB_DIR} -u ${i} ${tmpout}/Library/SMS/sms.db
 done

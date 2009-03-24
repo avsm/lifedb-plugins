@@ -25,7 +25,9 @@ def parseLog(chatlog):
     chats = tree.getElementsByTagName('chat')
     for chat in chats:
         account = chat.getAttribute('account')
-        service = chat.getAttribute('service')
+        service = chat.getAttribute('service').lowercase ()
+        if service == "gtalk":
+           service = "jabber"
         version = chat.getAttribute('version')
         transport = chat.getAttribute('transport')
         uri = chat.namespaceURI

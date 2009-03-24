@@ -8,6 +8,8 @@ import plistlib
 import datetime
 import time
 import uuid
+import shutil
+import simplejson
 
 def stripData(pl, attachments):
     if type(pl) == plistlib._InternalDict:
@@ -55,6 +57,21 @@ def stripData(pl, attachments):
         print pl
         print type(pl)
         sys.exit(2)
+
+def get_plist(pfname):
+    fin = open(pfname, 'rb')
+    xml1_tmp = tempfile.NamedTemporaryFile()
+    xml1_tmp.write(fin.read())
+    fin.close()
+    xml1_tmp.flush()
+    status = os.system("plutil -convert xml1 %s" % xml1_tmp.name)
+    if not status == 0:
+       xml1_tmp.close()
+       print >> sys.stderr, "error parsing binary plist"
+       sys.exit(2)
+    p = plistlib.readPlist(xml1_tmp.name)
+    xml1_tmp.close()
+    return p
 
 def usage():
     print "Usage: %s [-v] [-h] [-x <extract prefix>] -o <output directory> <backup directory>" % sys.argv[0]
@@ -105,39 +122,44 @@ def main(argv=None):
         sys.exit(1)
     atts={}
     pl = stripData(plistlib.readPlist(manifest_name), atts)
-    import simplejson
+    #import simplejson
     #print simplejson.dumps(pl, indent=2)
     home={}
     for k in pl['Data']['Files']:
         if 'AppId' in pl['Data']['Files'][k]:
             pass
-            #print pl['Data']['Files'][k]['AppId']
         else:
             home[k] = pl['Data']['Files'][k]
     
     os.makedirs(outputdir)
-    
+   
+    def init_output_path(plistname):
+        p = get_plist(plistname)
+        #print simplejson.dumps(p, indent=2)
+        if (extract_filter and p['Path'].startswith(extract_filter)) or not extract_filter:
+            fullpath = "%s/%s" % (outputdir, p['Path'])
+            basepath, fl = os.path.split(fullpath)
+            if not os.path.exists(basepath):
+                os.makedirs(basepath)
+            return (fullpath, p)
+        else:
+            return (None, None)
+
     for mdbackup_file in home:
-        mdbackup_obj = open("%s/%s.mdbackup" % (basedir, mdbackup_file), "rb")
-        xml1_tmp = tempfile.NamedTemporaryFile()
-        xml1_tmp.write(mdbackup_obj.read())
-        xml1_tmp.flush()
-        status = os.system("plutil -convert xml1 %s" % xml1_tmp.name)
-        if not status == 0:
-            xml1_tmp.close()
-            print >> sys.stderr, "error parsing binary plist"
-            sys.exit(2)
-        p = plistlib.readPlist(xml1_tmp.name)
-        xml1_tmp.close()
-        atts={}
-        phonedata = stripData(p, atts)
-        #print simplejson.dumps(phonedata, indent=2)
-        if 'Path' in phonedata:
-            if (extract_filter and phonedata['Path'].startswith(extract_filter)) or not extract_filter:
-                fullpath = "%s/%s" % (outputdir, phonedata['Path'])
-                basepath, fl = os.path.split(fullpath)
-                if not os.path.exists(basepath):
-                    os.makedirs(basepath)
+        mdpath = "%s/%s.mdbackup" % (basedir, mdbackup_file)
+        if not os.path.isfile(mdpath):
+            # look for an mddata file instead
+            mddata = "%s/%s.mddata" % (basedir,mdbackup_file)
+            mdinfo = "%s/%s.mdinfo" % (basedir,mdbackup_file)
+            fullpath,p = init_output_path(mdinfo)
+            if fullpath:
+                shutil.copyfile(mddata, fullpath)
+        else:
+            fullpath, p = init_output_path(mdpath)
+            atts={}
+            #print simplejson.dumps(phonedata, indent=2)
+            if fullpath:
+                phonedata = stripData(p, atts)
                 ofile = open(fullpath, 'wb')
                 if type(phonedata['Data']) == dict and '_uuid' in phonedata['Data']:
                     data = atts[phonedata['Data']['_uuid']]

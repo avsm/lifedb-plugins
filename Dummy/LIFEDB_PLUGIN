@@ -1,0 +1,5 @@
+{
+   "name" : "Dummy",
+   "cmd" : "./run.sh",
+   "declares" : []
+}
