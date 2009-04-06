@@ -36,6 +36,7 @@ def ti_to_tt(ti):
     return (tstamp,tt)
 
 def main():
+    symlink_photos = (os.getenv("SYMLINK_PHOTOS") and True) or False
     book = AddressBook.ABAddressBook.sharedAddressBook()
     addrs = book.me().valueForProperty_(AddressBook.kABEmailProperty)
     myemail = addrs.valueAtIndex_(addrs.indexForIdentifier_(addrs.primaryIdentifier()))
@@ -96,26 +97,34 @@ def main():
                fname=row[0]
                email=row[1]
                if email:
-                  m['_to'].append({'type':email, 'id':email})
+                  m['_to'].append({'type':'email', 'id':email})
             output_dir = os.path.join(lifedb_dir, str(tt[0]), str(tt[1]), str(tt[2]))
             att_dir = attachments_dir(output_dir)
-            fin = open(img_path, 'rb')
-            try:
-               tags = EXIF.process_file(fin)
-            except:
-               pass
-            fin.close()
+#            fin = open(img_path, 'rb')
+#            try:
+#               tags = EXIF.process_file(fin)
+#            except:
+#               pass
+#            fin.close()
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
             if not os.path.isdir(att_dir):
                 os.makedirs(att_dir)
             oimgname = os.path.join(att_dir, uid)
-            shutil.copyfile(img_path, oimgname)
+            if symlink_photos:
+                try:
+                    os.unlink(oimgname)
+                except:
+                    pass
+                os.symlink(img_path, oimgname)
+            else:
+                shutil.copyfile(img_path, oimgname)
             ofname = os.path.join(output_dir, guid+".lifeentry")
             fout = open(ofname, 'w')
             simplejson.dump(m, fout, indent=2)
 #            print simplejson.dumps(m, indent=2)
             fout.close()
+            print ofname
 
 if __name__ == "__main__":
     main()
