@@ -1,0 +1,12 @@
+{
+   "name" : "iPhoto",
+   "cmd" : "sync.py",
+   "declares" : [
+       {
+         "pltype" : "com.apple.iphoto",
+         "description" : "iPhoto Picture",
+         "implements" : "public.message",
+         "icon" : "iphoto_icon.png"
+       }
+   ]
+}
