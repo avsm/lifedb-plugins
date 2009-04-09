@@ -1,0 +1,19 @@
+set AlbumName to "Photos from Anil Madhavapeddy"
+set importDirectory to "/Users/nick/Documents/LifeDB/iPhotoImport"
+
+tell application "iPhoto"
+	activate
+	if not (exists (album AlbumName)) then
+		new album name AlbumName
+	end if
+	
+	set theAlbum to album AlbumName
+	import from importDirectory to theAlbum without force copy
+	
+	repeat while (importing)
+		delay 0.5
+	end repeat
+	
+	-- # DO STUFF TO PHOTOS LIKE ADD TITLE, DESCRIPTION AND KEYWORDS
+	
+end tell
