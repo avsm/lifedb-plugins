@@ -1,6 +1,6 @@
 {
    "name" : "iPhoto",
-   "cmd" : "sync.py",
+   "cmd" : "sync.sh",
    "declares" : [
        {
          "pltype" : "com.apple.iphoto",
