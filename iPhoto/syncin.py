@@ -8,6 +8,7 @@ from datetime import datetime
 from CoreFoundation import kCFAbsoluteTimeIntervalSince1970
 from AppKit import *
 import AddressBook
+import md5
 
 def relpath(path, start):
     """Return a relative version of a path"""
@@ -78,7 +79,7 @@ def main():
             rel_path = (relpath(img_path, base),)
             root,ext = os.path.splitext(img_path)
             uid = img['GUID'] + ext
-            guid = 'iPhoto:' + img['GUID']
+            guid = md5.new(file(img_path).read()).hexdigest ()
             tstamp,tt = ti_to_tt(img['DateAsTimerInterval'])
             m = {'_type':'com.apple.iphoto', '_timestamp':tstamp, '_att': [uid], '_uid': guid }
             if 'Rating' in img:
