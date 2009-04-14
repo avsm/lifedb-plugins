@@ -61,7 +61,7 @@ def main():
           skip = True
         finally:
           fin.close()
-        if skip:
+        if skip or (exif_tags == {}):
           continue
         if exif_tags.has_key('EXIF DateTimeOriginal'):
           raw = str(exif_tags['EXIF DateTimeOriginal'])
@@ -73,14 +73,16 @@ def main():
         guid = md5.new(file(fname).read()).hexdigest()
         uid = guid + ext
         m = { '_type':'com.clinklabs.photofiles', '_timestamp':tstamp, '_att': [uid], '_uid': guid, '_from': from_info, '_to':[] }
-        output_dir = os.path.join(lifedb_dir, relpath(root, base))
+        rpath = relpath(root,base)
+        m['caption'] = os.path.join(rpath, os.path.basename(fname))
+        output_dir = os.path.join(lifedb_dir, rpath)
         ofname = os.path.join(output_dir, os.path.basename(fname) + ".lifeentry")
         if not os.path.isdir(output_dir):
           os.makedirs(output_dir)
         att_dir = attachments_dir(output_dir)
         if not os.path.isdir(att_dir):
           os.makedirs(att_dir)
-
+ 
         oimgname = os.path.join(att_dir, uid)
         if symlink_photos:
           try:
