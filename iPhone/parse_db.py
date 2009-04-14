@@ -117,7 +117,7 @@ def parseSMS(c, uid_prefix):
           elif e['flags'] == 3:
             e['_from'] = { 'type': 'phone', 'id' : mynum }
             e['_to'] = [ { 'type': 'phone', 'id' : e['number'] } ]
-          uid = "%s.SMS.%s" % (uid_prefix,row[0])
+          uid = "%s.SMS.%s" % (uid_prefix,e['number'])
           sms[uid] = e
     return sms
 
