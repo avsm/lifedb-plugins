@@ -1,0 +1,11 @@
+{
+   "name" : "PhotoFiles",
+   "cmd" : "sync.sh",
+   "declares" : [
+       {
+         "pltype" : "com.clinklabs.photo.files",
+         "description" : "Photo Files",
+         "implements" : "public.message"
+       }
+   ]
+}
