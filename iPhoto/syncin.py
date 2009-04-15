@@ -91,6 +91,7 @@ def main():
                 m['_tags'] = kw
             if 'Caption' in img:
                 m['caption'] = img['Caption']
+            m['file_path'] = relpath(img_path, base)
             c.execute(sql, rel_path)
             m['_from'] = from_info
             m['_to'] = []
