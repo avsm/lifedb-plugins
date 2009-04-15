@@ -12,6 +12,7 @@ def find_att(entry, uid):
   return found
 
 def process_file(base, file):
+  print >> sys.stderr, "Processing %s" % file
   fin = open(file, 'rb')
   j = simplejson.load(fin)
   fin.close()
@@ -20,12 +21,12 @@ def process_file(base, file):
     print >> sys.stderr, "No attachments for %s" % file
   atts = map(lambda x: find_att(file, x), atts)
   frm = j['_from']['id']
-  subdir = j.get('caption',None)
+  subdir = j.get('file_path',None)
   if not subdir:
     subdir = frm + "/misc/" + j['_uid']
   else:
     subdir = frm + "/" + subdir
-  # XXX ensure there is no ../ in the caption
+  # XXX ensure there is no ../ in the file_path
   for att in atts:
     ofname = os.path.join(base, subdir)
     ofdir = os.path.dirname(ofname)
