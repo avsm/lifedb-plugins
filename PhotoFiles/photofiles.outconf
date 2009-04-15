@@ -1,0 +1,9 @@
+{
+  "name": "photofiles-out",
+  "plugin": "PhotoFiles",
+  "pltype": "com.apple.iphoto",
+  "args": {
+    "PHOTO_FILES_DIR" : "/Users/avsm/scratch/dev/photofiles"
+  }
+}
+
