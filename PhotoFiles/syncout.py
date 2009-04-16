@@ -32,6 +32,7 @@ def process_file(base, file):
     ofdir = os.path.dirname(ofname)
     if not os.path.isdir(ofdir):
       os.makedirs(ofdir)
+    print >> sys.stderr, "copying: %s -> %s" % (att, ofname)
     shutil.copyfile(att, ofname)
     print "NEW: %s" % ofname
 

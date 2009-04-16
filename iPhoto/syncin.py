@@ -9,6 +9,7 @@ from CoreFoundation import kCFAbsoluteTimeIntervalSince1970
 from AppKit import *
 import AddressBook
 import md5
+import tempfile,filecmp
 
 def relpath(path, start):
     """Return a relative version of a path"""
@@ -121,12 +122,18 @@ def main():
                 os.symlink(img_path, oimgname)
             else:
                 shutil.copyfile(img_path, oimgname)
+
             ofname = os.path.join(output_dir, guid+".lifeentry")
-            fout = open(ofname, 'w')
+            fd, tmpname = tempfile.mkstemp(suffix=".lifeentry")
+            fout = os.fdopen(fd, 'w')
             simplejson.dump(m, fout, indent=2)
-#            print simplejson.dumps(m, indent=2)
             fout.close()
-            print ofname
+            if (not os.path.isfile(ofname)) or (not filecmp.cmp(tmpname, ofname)):
+              print "NEW: %s" % ofname
+              os.rename(tmpname, ofname)
+            else:
+              print "SKIP: %s" % ofname
+              os.unlink(tmpname)
 
 if __name__ == "__main__":
     main()
