@@ -80,7 +80,7 @@ def main():
             rel_path = (relpath(img_path, base),)
             root,ext = os.path.splitext(img_path)
             uid = img['GUID'] + ext
-            guid = md5.new(file(img_path).read()).hexdigest ()
+            guid = md5.new(file(img_path).read() + str(img)).hexdigest ()
             tstamp,tt = ti_to_tt(img['DateAsTimerInterval'])
             m = {'_type':'com.apple.iphoto', '_timestamp':tstamp, '_att': [uid], '_uid': guid }
             if 'Rating' in img:

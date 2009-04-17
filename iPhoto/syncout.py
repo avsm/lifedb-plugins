@@ -1,11 +1,10 @@
-import os,sys,simplejson,tempfile,shutil
+import os,sys,simplejson,tempfile,shutil,subprocess
 
 osa_template="""
 set AlbumName to "From %s"
 set importDirectory to "%s"
 
 tell application "iPhoto"
-        activate
         if not (exists (album AlbumName)) then
                 new album name AlbumName
         end if
@@ -61,20 +60,26 @@ def create_osascript(tmpdir, entries):
         frms[frm] = frmtmp
       os.symlink(att, dst)
       print >> sys.stderr, "symlink: %s -> %s" % (att,dst)
+  err=False
   for frm,frmdir in frms.items():
-    tmp = tempfile.NamedTemporaryFile()
     osa = osa_template % (frm, frmdir)
-    tmp.write(osa)
-    tmp.flush()
-    os.system("osascript %s" % tmp.name)
-    tmp.close()
+    p = subprocess.Popen("/usr/bin/osascript", shell=True, stdin=subprocess.PIPE, close_fds=True)
+    p.stdin.write(osa)
+    p.stdin.close()
+    pid, sts = os.waitpid(p.pid, 0)
+    ecode = os.WEXITSTATUS(sts)
+    if ecode != 0:
+       err = True
+  return err
 
 def main():
   files = sys.argv[1:]
   entries = map(process_file, files)
   tmpdir = tempfile.mkdtemp(prefix="iphotosync")
-  create_osascript(tmpdir, entries)
+  err = create_osascript(tmpdir, entries)
   shutil.rmtree(tmpdir)
-  
+  if err:
+    exit(1)
+
 if __name__ == "__main__":
   main ()
