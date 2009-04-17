@@ -135,10 +135,13 @@ pydateutil: $(PYDATEUTIL_STAMP)
 dist: lxml pyjson pytwitter pydateutil pyfuse pyskype $(SETENV_SCRIPT)
 	cd IMAP && $(MAKE) 
 
-INSTALL_PLUGINS=iPhoto Dummy
+INSTALL_PLUGINS=iPhoto PhotoFiles
 .PHONY: install
 install: dist
 	if [ ! -d "$(DEST)" ]; then exit 1; fi
+	if [ ! -d "$(ETC)" ]; then exit 1; fi
 	mkdir -p $(DEST)/obj/py/lib/python2.5
 	cp -r $(OBJDIR)/py/lib/python2.5/ $(DEST)/obj/py/lib/python2.5/
 	for i in $(INSTALL_PLUGINS); do mkdir $(DEST)/$$i; cp -r $$i/ $(DEST)/$$i/; done
+	for i in $(INSTALL_PLUGINS); do mkdir -p $(ETC)/conf; cp $$i/*.conf $$i/*.outconf $(ETC)/conf/; done
+
