@@ -1,4 +1,5 @@
-import os,sys,simplejson,tempfile,shutil,subprocess
+import os,sys,simplejson,tempfile,shutil,subprocess,sqlite3,glob
+import util
 
 osa_template="""
 set AlbumName to "From %s"
@@ -20,6 +21,7 @@ tell application "iPhoto"
         
 end tell
 """
+
 
 def find_att(entry, uid):
   dir,file = os.path.split(entry)
@@ -45,7 +47,7 @@ def process_file(file):
   print atts,frm,tags
   return (atts,frm,tags)
 
-def create_osascript(tmpdir, entries):
+def create_osascript(c, uidmapdir, tmpdir, entries):
   print >> sys.stderr, "tempdir: %s" % tmpdir
   # group all the froms into a temporary directory of their own
   frms = {}
@@ -70,13 +72,49 @@ def create_osascript(tmpdir, entries):
     ecode = os.WEXITSTATUS(sts)
     if ecode != 0:
        err = True
+    # now retrieve the UIDs we just injected into iPhoto back
+    innames = map(os.path.basename, glob.glob(frmdir + "/*"))
+    for fname in innames:
+      # fname is of form guid.jpg
+      sql = "select uid from SqFileInfo inner join SqFileImage on (SqFileInfo.primaryKey = SqFileImage.primaryKey) inner join SqPhotoInfo on (SqFileImage.photoKey = SqPhotoInfo.primaryKey)  where relativePath like \"Originals/%%/%s\"" % fname;
+      c.execute(sql)
+      newuid=None
+      for row in c:
+        if newuid:
+          print >> sys.stderr, "unexpected multiple results in UID query: %s %s" % (newuid, row)
+          exit(1)
+        newuid = row[0]
+      if newuid:
+        # fname is of form guid.jpg, so split out the extension and convert the guid to lifedb
+        origuid = util.split_to_guid(os.path.splitext(fname)[0])[0]
+        # newuid is of form "uuid" so convert it into the lifedb uid format
+        newlifeuid = util.split_to_guid(newuid)[0]
+        fout = open(os.path.join(uidmapdir, newlifeuid), 'w')
+        fout.write(origuid)
+        fout.close()
+        print >> sys.stderr, "UIDMap: %s -> %s" % (newuid, origuid)
   return err
 
 def main():
   files = sys.argv[1:]
+  home = os.getenv("HOME")
+  if not home:
+    print >> sys.stderr, "HOME not set in environment"
+    exit(1)
+  uidmapdir = os.getenv("LIFEDB_UID_MAP")
+  if not uidmapdir:
+    print >> sys.stderr, "LIFEDB_UID_MAP not set in environment"
+    exit(1)
+  # connect to iPhoto Sqlite DB
+  base = os.path.join(home, "Pictures/iPhoto Library")
+  idb = os.path.join(base, 'iPhotoMain.db')
+  conn = sqlite3.connect(idb)
+  c = conn.cursor()
+  
   entries = map(process_file, files)
   tmpdir = tempfile.mkdtemp(prefix="iphotosync")
-  err = create_osascript(tmpdir, entries)
+  err = create_osascript(c, uidmapdir, tmpdir, entries)
+
   shutil.rmtree(tmpdir)
   if err:
     exit(1)

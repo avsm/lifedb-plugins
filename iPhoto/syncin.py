@@ -40,6 +40,9 @@ def ti_to_tt(ti):
 
 def main():
     symlink_photos = (os.getenv("SYMLINK_PHOTOS") and True) or False
+    uidmapdir = os.getenv("LIFEDB_UID_MAP") or exit(3)
+    lifedb_dir = os.getenv("LIFEDB_DIR") or exit(4)
+    home = os.getenv("HOME") or exit(5)
     book = AddressBook.ABAddressBook.sharedAddressBook()
     addrs = book.me().valueForProperty_(AddressBook.kABEmailProperty)
     myemail = addrs.valueAtIndex_(addrs.indexForIdentifier_(addrs.primaryIdentifier()))
@@ -47,7 +50,6 @@ def main():
     lname = book.me().valueForProperty_(AddressBook.kABLastNameProperty)
     name = "%s %s" % (fname, lname)
     from_info = { 'type': 'email', 'id' : myemail }
-    home = os.getenv("HOME")
     base = os.path.join(home, "Pictures/iPhoto Library")
     idb = os.path.join(base, 'iPhotoMain.db')
     fdb = os.path.join(base, 'face.db')
@@ -56,7 +58,6 @@ def main():
     c.execute("attach database '%s' as i" % idb)
     c.execute("attach database '%s' as f" % fdb)
     sql = "select f.face_name.name,f.face_name.email,relativePath from i.SqFileInfo inner join i.SqFileImage on (i.SqFileImage.primaryKey = i.SqFileInfo.primaryKey) inner join i.SqPhotoInfo on (i.SqFileImage.photoKey = i.SqPhotoInfo.primaryKey) inner join f.detected_face on (f.detected_face.image_key = i.SqFileImage.photoKey) inner join f.face_name on (f.detected_face.face_key = f.face_name.face_key) where f.face_name.name != '' and relativePath=?"
-    lifedb_dir = os.getenv("LIFEDB_DIR")
     fname = "%s/Pictures/iPhoto Library/AlbumData.xml" % os.getenv("HOME")
     pl = plistlib.readPlist(fname)
 
@@ -103,18 +104,33 @@ def main():
                if email:
                   m['_to'].append({'type':'email', 'id':email})
             output_dir = os.path.join(lifedb_dir, output_subdir)
+            ofname = os.path.join(output_dir, guid+".lifeentry")
+
+            # check if the UID exists in the UID_MAP_DIR
+            uidmapfile = os.path.join(uidmapdir, guid)
+            if os.path.isfile(uidmapfile):
+                fin = open(uidmapfile, 'r')
+                origuid = fin.read()
+                fin.close()
+                uid = origuid
+                print >> sys.stderr, "remapping UID: %s -> %s" % (m['_uid'], uid)
+                m['_uid'] = uid
+                output_dir = os.path.dirname(os.path.realpath(ofname))
             att_dir = attachments_dir(output_dir)
+            oimgname = os.path.join(att_dir, uid)
+
+            if not os.path.isdir(output_dir):
+                os.makedirs(output_dir)
+            if not os.path.isdir(att_dir):
+                os.makedirs(att_dir)
+
 #            fin = open(img_path, 'rb')
 #            try:
 #               tags = EXIF.process_file(fin)
 #            except:
 #               pass
 #            fin.close()
-            if not os.path.isdir(output_dir):
-                os.makedirs(output_dir)
-            if not os.path.isdir(att_dir):
-                os.makedirs(att_dir)
-            oimgname = os.path.join(att_dir, uid)
+
             if symlink_photos:
                 try:
                     os.unlink(oimgname)
@@ -124,7 +140,6 @@ def main():
             else:
                 shutil.copyfile(img_path, oimgname)
 
-            ofname = os.path.join(output_dir, guid+".lifeentry")
             fd, tmpname = tempfile.mkstemp(suffix=".lifeentry")
             fout = os.fdopen(fd, 'w')
             simplejson.dump(m, fout, indent=2)
