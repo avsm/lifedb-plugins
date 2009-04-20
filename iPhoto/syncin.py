@@ -10,6 +10,7 @@ from AppKit import *
 import AddressBook
 import md5
 import tempfile,filecmp
+import util
 
 def relpath(path, start):
     """Return a relative version of a path"""
@@ -80,7 +81,7 @@ def main():
             rel_path = (relpath(img_path, base),)
             root,ext = os.path.splitext(img_path)
             uid = img['GUID'] + ext
-            guid = md5.new(file(img_path).read() + str(img)).hexdigest ()
+            guid, output_subdir = util.split_to_guid(img['GUID'])
             tstamp,tt = ti_to_tt(img['DateAsTimerInterval'])
             m = {'_type':'com.apple.iphoto', '_timestamp':tstamp, '_att': [uid], '_uid': guid }
             if 'Rating' in img:
@@ -101,7 +102,7 @@ def main():
                email=row[1]
                if email:
                   m['_to'].append({'type':'email', 'id':email})
-            output_dir = os.path.join(lifedb_dir, str(tt[0]), str(tt[1]), str(tt[2]))
+            output_dir = os.path.join(lifedb_dir, output_subdir)
             att_dir = attachments_dir(output_dir)
 #            fin = open(img_path, 'rb')
 #            try:
