@@ -104,7 +104,7 @@ def main():
                if email:
                   m['_to'].append({'type':'email', 'id':email})
             output_dir = os.path.join(lifedb_dir, output_subdir)
-            ofname = os.path.join(output_dir, guid+".lifeentry")
+            ofname = os.path.join(output_dir, m['_uid']+".lifeentry")
 
             # check if the UID exists in the UID_MAP_DIR
             uidmapfile = os.path.join(uidmapdir, guid)
@@ -116,6 +116,7 @@ def main():
                 print >> sys.stderr, "remapping UID: %s -> %s" % (m['_uid'], uid)
                 m['_uid'] = uid
                 output_dir = os.path.dirname(os.path.realpath(ofname))
+                ofname = os.path.join(output_dir, m['_uid']+".lifeentry")
             att_dir = attachments_dir(output_dir)
             oimgname = os.path.join(att_dir, uid)
 
