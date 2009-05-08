@@ -5,6 +5,7 @@ import sys, os
 import simplejson
 from datetime import datetime
 import getopt
+import util
 
 # CREATE TABLE message (ROWID INTEGER PRIMARY KEY AUTOINCREMENT, 
 # address TEXT, date INTEGER, text TEXT, flags INTEGER, replace INTEGER, 
@@ -70,8 +71,9 @@ def main():
     elif mode == 'Call':
         res = parseCall(c, uid_prefix)
     for uid in res:
-        tt = datetime.fromtimestamp(res[uid]['_timestamp']).timetuple()
-        output_dir = os.path.join(save_dir, str(tt[0]), str(tt[1]), str(tt[2]))
+        guid, output_subdir = util.split_to_guid(uid)
+        output_dir = os.path.join(save_dir, output_subdir)
+        res[uid]['_uid'] = guid
         full_path = os.path.join(output_dir, "%s.lifeentry" % uid)
         if not os.path.isdir(output_dir):
             os.makedirs(output_dir)
@@ -118,7 +120,6 @@ def parseSMS(c, uid_prefix):
             e['_from'] = { 'type': 'phone', 'id' : mynum }
             e['_to'] = [ { 'type': 'phone', 'id' : e['number'] } ]
           uid = "%s.SMS.%s" % (uid_prefix,e['number'])
-          e['_uid'] = uid
           sms[uid] = e
     return sms
 
@@ -144,7 +145,6 @@ def parseCall(c, uid_prefix):
             e['_from'] = { 'type': 'phone', 'id' : mynum }
             e['_to'] = [ { 'type': 'phone', 'id' : e['number'] } ]
         uid = "%s.Call.%s" % (uid_prefix, row[0])
-        e['_uid'] = uid
         call[uid] = e
     return call
     
