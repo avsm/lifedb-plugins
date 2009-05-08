@@ -11,6 +11,7 @@ import hashlib
 import base64
 import xml
 import lxml.html
+import util
 
 cache_dir = None
 save_dir = None
@@ -25,7 +26,7 @@ def parseLog(chatlog):
     chats = tree.getElementsByTagName('chat')
     for chat in chats:
         account = chat.getAttribute('account')
-        service = chat.getAttribute('service').lowercase ()
+        service = chat.getAttribute('service').lower()
         if service == "gtalk":
            service = "jabber"
         version = chat.getAttribute('version')
@@ -69,7 +70,9 @@ def parseLog(chatlog):
             h.update(tm)
             h.update(body)
             uid = h.hexdigest()
-            output_dir = os.path.join(save_dir, str(tt[0]), str(tt[1]), str(tt[2]))
+            guid, output_subdir = util.split_to_guid(uid)
+            output_dir = os.path.join(save_dir, output_subdir)
+            m['_uid'] = guid
             output_filename = "%s.lifeentry" % uid
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
