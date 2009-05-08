@@ -118,6 +118,7 @@ def parseSMS(c, uid_prefix):
             e['_from'] = { 'type': 'phone', 'id' : mynum }
             e['_to'] = [ { 'type': 'phone', 'id' : e['number'] } ]
           uid = "%s.SMS.%s" % (uid_prefix,e['number'])
+          e['_uid'] = uid
           sms[uid] = e
     return sms
 
@@ -143,6 +144,7 @@ def parseCall(c, uid_prefix):
             e['_from'] = { 'type': 'phone', 'id' : mynum }
             e['_to'] = [ { 'type': 'phone', 'id' : e['number'] } ]
         uid = "%s.Call.%s" % (uid_prefix, row[0])
+        e['_uid'] = uid
         call[uid] = e
     return call
     
