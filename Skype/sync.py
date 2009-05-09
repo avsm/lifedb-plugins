@@ -1,6 +1,7 @@
 import Skype4Py
 import simplejson
 import datetime, time, sys, os
+import util
 
 def main():
     save_dir = os.getenv("LIFEDB_DIR")
@@ -30,8 +31,11 @@ def main():
         if call.Participants:
             m['participants'] = map(lambda x: x.Handle, call.Participants)
        
-        dir = os.path.join(save_dir,str(tt[0]),str(tt[1]),str(tt[2]))
-        fname = "%s.%s.%s.lifeentry" % (myHandle, tstamp, call.Id)
+        uid = "%s.%s.%s" % (call.Id, tstamp, myHandle)
+        guid, subdir = util.split_to_guid(uid)
+        dir = os.path.join(save_dir, subdir)
+        fname = "%s.lifeentry" % guid
+        m['_uid'] = guid
         full_fname = os.path.join(dir, fname)
         if not os.path.isfile(full_fname):
             if not os.path.isdir(dir):

@@ -198,6 +198,8 @@ class MaildirFolder(BaseFolder):
             fout.write(atts[u])
             fout.flush()
             fout.close()
+        msguid = os.path.splitext(messagename)[0]
+        msg['_uid'] = msguid
         simplejson.dump(msg, file, indent=2)
 
         # Make sure the data hits the disk
