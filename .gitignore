@@ -1,3 +1,4 @@
 /obj/
 *.pyc
 /Twitter/Makefile.conf
+/IMAP/offlineimap/build/
