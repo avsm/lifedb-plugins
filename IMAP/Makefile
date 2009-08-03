@@ -1,8 +1,10 @@
+PYTHON ?= python
+
 .PHONY: build
 build:
-	cd $(PWD)/offlineimap && python setup.py build
+	cd $(PWD)/offlineimap && $(PYTHON) setup.py build
 
 .PHONY: clean
 clean:
-	cd offlineimap && python setup.py clean
+	cd offlineimap && $(PYTHON) setup.py clean
 	rm -rf $(PWD)/offlineimap/build
