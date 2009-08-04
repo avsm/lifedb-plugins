@@ -1,6 +1,6 @@
 {
    "name" : "Contacts",
-   "cmd" : "make run",
+   "cmd" : "run.sh",
    "declares" : [
        {
          "pltype" : "com.clinklabs.contact",
