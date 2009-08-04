@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/opt/local/bin/python2.5
 # Startup from system-wide installation
 # Copyright (C) 2002 - 2008 John Goerzen
 # <jgoerzen@complete.org>
@@ -18,4 +18,5 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
 from offlineimap import init
+import email.iterators
 init.startup('6.0.3')

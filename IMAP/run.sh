@@ -31,13 +31,6 @@ if [ "${IMAP_SERVER}" = "" ]; then
      exit 1
 fi
 
-PYTHON=/usr/bin/python
-
-if [ ! -x "${PYTHON}" ]; then
-    echo ${PYTHON}: not found
-    exit 1
-fi
-
 CONFIG_IN="./config/offlineimap.conf-maildir.in"
 CONFIG_OUT=${LIFEDB_CACHE_DIR}/offlineimap.conf
 mkdir -p ${LIFEDB_CACHE_DIR}
@@ -47,7 +40,5 @@ sed -e "s,@OBJ@,${LIFEDB_CACHE_DIR},g" -e "s,@LIFEDB_DIR@,${LIFEDB_DIR},g" \
     -e "s,@IMAPPASSWD@,${LIFEDB_PASSWORD},g" -e "s,@USE_SSL@,${USE_SSL},g" \
        < ${CONFIG_IN} > ${CONFIG_OUT}
 
-PYTHONPATH=./offlineimap/build/lib:$PYTHONPATH 
-export PYTHONPATH
-${PYTHON} ./offlineimap/build/scripts-2.5/offlineimap -u Noninteractive.Basic -c ${CONFIG_OUT}
+./offlineimap/dist/main.app/Contents/MacOS/main -u Noninteractive.Basic -c ${CONFIG_OUT}
 
