@@ -18,5 +18,9 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
 from offlineimap import init
+
 import email.iterators
+# XXX the email.iterators import is needed due to a bug in py2app:
+# http://mail.python.org/pipermail/pythonmac-sig/2007-January/018613.html
+
 init.startup('6.0.3')
