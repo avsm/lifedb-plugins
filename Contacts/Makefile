@@ -20,3 +20,7 @@ install:
 clean:
 	$(PYTHON) setup.py clean
 	rm -rf dist build
+
+.PHONY: builddep
+builddep:
+	sudo port -v install py25-py2app-devel py25-pyobjc2-cocoa py25-pyobjc-addressbook py25-simplejson
