@@ -90,7 +90,7 @@ def getField(p, fieldName):
     return encodeField(p.valueForProperty_(fieldName))
 
 def writeRecord(p, uid, mtime, attdir, fobj):
-    print "NEW: %s" % addressbook_name(p)
+#    print "NEW: %s" % addressbook_name(p)
     m = { '_type' : 'com.clinklabs.contact', '_timestamp' : mtime, 'abrecord' : uid , '_uid' : uid }
     for (fieldname, fieldkey) in FIELD_NAMES:
         v = getField(p, fieldkey)
@@ -152,7 +152,7 @@ def main(argv = None):
     save_dir = os.getenv("LIFEDB_DIR")
     if not save_dir:
        print >> sys.stderr, "no LIFEDB_DIR in env"
-       exit(1)
+       sys.exit(1)
     book = AddressBook.ABAddressBook.sharedAddressBook()
     for p in book.people():
         mtime_ts = getField(p, AddressBook.kABModificationDateProperty)
