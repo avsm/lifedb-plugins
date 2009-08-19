@@ -9,7 +9,7 @@ from setuptools import setup
 
 APP = ['sync.py']
 DATA_FILES = []
-OPTIONS = {'argv_emulation': True}
+OPTIONS = {'argv_emulation': True, 'packages': ['lxml'] }
 
 setup(
     app=APP,

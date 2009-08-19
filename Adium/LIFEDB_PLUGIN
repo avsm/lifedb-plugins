@@ -1,6 +1,6 @@
 {
    "name" : "Adium",
-   "cmd" : "make run",
+   "cmd" : "./run.sh",
    "declares" : [
        {
          "pltype" : "com.adium",
