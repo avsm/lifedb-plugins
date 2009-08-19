@@ -134,15 +134,15 @@ def main():
     save_dir = os.getenv("LIFEDB_DIR")
     if not save_dir:
         print >> sys.stderr, "no LIFEDB_DIR in env"
-        exit(1)
+        sys.exit(1)
     cache_dir = os.getenv("LIFEDB_CACHE_DIR")
     if not cache_dir: 
         print >> sys.stderr, "no LIFEDB_CACHE_DIR in env"
-        exit(1)
+        sys.exit(1)
     logdir = "%s/Library/Application Support/Adium 2.0/Users/Default/Logs/" % os.getenv("HOME")
     if not os.path.isdir(logdir):
         print >> sys.stderr, "Unable to find Adium log dir in: %s" % logdir
-        exit(1)
+        sys.exit(1)
 
     for root, dirs, files in os.walk(logdir):
         for f in files:
