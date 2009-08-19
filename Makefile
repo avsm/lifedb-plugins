@@ -3,7 +3,7 @@ OBJDIR ?= $(PWD)/obj
 APPS ?= Contacts Twitter IMAP Adium Phone Skype
 DATA_DIR ?= $(HOME)/Documents/LifeDB
 CACHE_DIR ?= $(HOME)/Library/Caches/LifeDB
-INSTALL_PLUGINS ?= IMAP Contacts
+INSTALL_PLUGINS ?= IMAP Contacts Adium
 
 .DEFAULT: all
 
