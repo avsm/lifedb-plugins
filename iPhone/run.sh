@@ -13,7 +13,7 @@ set -eu
 
 MANIFEST=./dist/manifest.app/Contents/MacOS/manifest 
 PARSE_DB=./dist/parse_db.app/Contents/MacOS/parse_db 
-BASE="/Users/$USER/Library/Application Support/MobileSync/Backup/"
+BASE="$HOME/Library/Application Support/MobileSync/Backup/"
 IPHONE_LIST=`ls -1 "${BASE}"`
 TMPDIR=`mktemp -d -t sms.XXXXXXXXXX`
 VERBOSE=-v
