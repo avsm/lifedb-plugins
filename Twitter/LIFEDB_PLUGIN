@@ -1,6 +1,6 @@
 {
    "name" : "Twitter",
-   "cmd" : "make run",
+   "cmd" : "./run.sh",
    "declares" : [
        {
          "pltype" : "com.twitter",
