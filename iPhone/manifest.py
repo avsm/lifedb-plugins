@@ -90,6 +90,19 @@ def get_plist(pfname):
     xml1_tmp.close()
     return p
 
+def get_plist_of_string(pl):
+    xml1_tmp = tempfile.NamedTemporaryFile()
+    xml1_tmp.write(pl)
+    xml1_tmp.flush()
+    status = os.system("plutil -convert xml1 %s" % xml1_tmp.name)
+    if not status == 0:
+       xml1_tmp.close()
+       print >> sys.stderr, "error parsing binary plist"
+       sys.exit(2)
+    p = plistlib.readPlist(xml1_tmp.name)
+    xml1_tmp.close()
+    return p
+
 def usage():
     print "Usage: %s [-v] [-h] [-x <extract prefix>] -o <output directory> <backup directory>" % sys.argv[0]
     print "  -v : verbose output (default: False)"
@@ -152,7 +165,12 @@ def main(argv=None):
    
     def init_output_path(plistname):
         p = get_plist(plistname)
-        #print simplejson.dumps(p, indent=2)
+        print str(p)
+        if p['Version'] == "3.0":
+          if p['IsEncrypted']:
+            print "Backup is encrypted, cannot parse it."
+            sys.exit(1)
+          p = get_plist_of_string(p['Metadata'].data)
         if (extract_filter and p['Path'].startswith(extract_filter)) or not extract_filter:
             fullpath = "%s/%s" % (outputdir, p['Path'])
             basepath, fl = os.path.split(fullpath)
