@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh 
 
 if [ "$1" != "" ]; then
    LIFEDB_DIR=$1
@@ -11,12 +11,12 @@ fi
 
 set -eu
 
-PYTHON=/usr/bin/python
+MANIFEST=./dist/manifest.app/Contents/MacOS/manifest 
+PARSE_DB=./dist/parse_db.app/Contents/MacOS/parse_db 
 BASE="/Users/$USER/Library/Application Support/MobileSync/Backup/"
 IPHONE_LIST=`ls -1 "${BASE}"`
 TMPDIR=`mktemp -d -t sms.XXXXXXXXXX`
-PYTHONPATH=../obj/py/lib/python2.5/site-packages
-export PYTHONPATH
+VERBOSE=-v
 
 trap "rm -rf $TMPDIR; exit" INT TERM EXIT
 
@@ -26,8 +26,9 @@ for i in "${IPHONE_LIST}"; do
         echo skipping non-directory "${fdir}"
     fi
     tmpout="${TMPDIR}/${i}"
-    ${PYTHON} ./manifest.py -x Library -o ${tmpout} "${fdir}"
+    echo $
+    ${MANIFEST} ${VERBOSE} -x Library -o ${tmpout} "${fdir}"
     echo cd ${tmpout}
-    ${PYTHON} ./parse_db.py -m call -o ${LIFEDB_DIR} -u ${i} ${tmpout}/Library/CallHistory/call_history.db
-    ${PYTHON} ./parse_db.py -m sms -o ${LIFEDB_DIR} -u ${i} ${tmpout}/Library/SMS/sms.db
+    ${PARSE_DB} -m call -o ${LIFEDB_DIR} -u ${i} ${tmpout}/Library/CallHistory/call_history.db
+    ${PARSE_DB} -m sms -o ${LIFEDB_DIR} -u ${i} ${tmpout}/Library/SMS/sms.db
 done

@@ -1,6 +1,6 @@
 {
    "name" : "iPhone",
-   "cmd" : "sync.sh",
+   "cmd" : "run.sh",
    "declares" : [
        {
          "pltype" : "com.apple.iphone.sms",
